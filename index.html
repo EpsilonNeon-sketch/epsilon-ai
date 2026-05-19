@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epsilon AI - Pink Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="icon" href="epsilon logo.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .pink-glow {
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.2);
+        }
+
+        .pink-border {
+            border: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+        .glass {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.1);
+        }
+
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(190, 24, 93, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(131, 24, 67, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(0, 0, 0, 1) 0px, transparent 100%);
+        }
+
+        .message-user {
+            background: rgba(244, 114, 182, 0.15);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-ai {
+            background: rgba(31, 31, 31, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom-left-radius: 4px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #f472b6;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+
+        @keyframes typing {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        #authPage.hidden,
+        #chatPage.hidden {
+            display: none;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+            border-radius: 0.75rem;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: rgba(244, 114, 182, 0.1);
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(244, 114, 182, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #f472b6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .code-content {
+            overflow-x: auto;
+            padding: 1rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .code-content code {
+            color: #e0e0e0;
+        }
+
+        .copy-btn {
+            background: rgba(244, 114, 182, 0.2);
+            background: rgba(244, 114, 182, 0.3);
+            color: #f472b6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(244, 114, 182, 0.3);
+        }
+
+        .image-message {
+            margin: 0.5rem 0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+        }
+
+        .image-controls {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .image-container:hover .image-controls {
+            opacity: 1;
+        }
+
+        .image-btn {
+            background: rgba(244, 114, 182, 0.6);
+            background: rgba(244, 114, 182, 0.8);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .image-btn:hover {
+            background: rgba(244, 114, 182, 0.8);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div class="bg-mesh"></div>
+
+    <!-- Auth Page -->
+    <div id="authPage" class="flex items-center justify-center min-h-screen px-4">
+        <div class="glass p-8 rounded-3xl w-full max-w-md pink-glow">
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-pink-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-pink-500/30">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-pink-500"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight">EPSILON<span class="text-pink-500"> AI</span></h1>
+                <p class="text-gray-400 mt-2">Sign in to start your pink journey</p>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1 ml-1">Email Address</label>
+                    <input type="email" id="email" required
+                        class="w-full bg-black/50 border border-pink-500/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition-all"
+                        placeholder="name@example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1 ml-1">Password</label>
+                    <input type="password" id="password" required
+                        class="w-full bg-black/50 border border-pink-500/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition-all"
+                        placeholder="••••••••">
+                </div>
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-pink-600/20 flex items-center justify-center gap-2 mt-6">
+                    <span>Sign In</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+            <div class="mt-6 text-center">
+                <button id="toggleAuthMode" class="text-pink-500 text-sm hover:underline">Don't have an account? Sign
+                    Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Page -->
+    <div id="chatPage" class="hidden h-screen flex overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="mobileNav"
+            class="w-80 glass border-r border-pink-500/10 flex flex-col hidden md:flex fixed md:static left-0 top-0 h-full z-50">
+            <div class="p-6 flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-8">
+                    <div
+                        class="w-10 h-10 bg-pink-600/20 rounded-xl flex items-center justify-center border border-pink-500/30">
+                        <i data-lucide="bot" class="w-6 h-6 text-pink-500"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight">EPSILON <span class="text-pink-500">AI</span></span>
+                </div>
+                <button id="newChatBtn"
+                    class="w-full flex items-center gap-3 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-500/30 text-pink-400 font-semibold p-3 rounded-xl transition-all mb-6">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span>New Chat</span>
+                </button>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Recent History</div>
+                <div id="chatsList" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)] scrollbar-hide">
+                    <!-- Chats will be listed here -->
+                </div>
+            </div>
+            <div class="mt-auto p-6 border-t border-pink-500/10">
+                <button id="logoutBtn"
+                    class="flex items-center gap-3 text-gray-400 hover:text-pink-500 transition-colors w-full">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span class="font-medium">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="flex-1 flex flex-col relative h-full">
+            <!-- Header -->
+            <header class="glass border-b border-pink-500/10 p-4 flex items-center justify-between md:px-8">
+                <div class="flex items-center gap-3">
+                    <button class="md:hidden text-gray-400 mr-2" id="mobileMenuBtn">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div>
+                        <h2 id="currentChatTitle" class="font-bold text-lg leading-tight">New Conversation</h2>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full"></span>
+                            <span class="text-xs text-gray-400">Pollinations v2.5</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="settingsBtn" class="text-gray-400 hover:text-pink-500 transition-colors">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Messages Container -->
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scrollbar-hide">
+                <!-- Welcome State -->
+                <div id="welcomeState"
+                    class="h-full flex flex-col items-center justify-center text-center opacity-50 px-4">
+                    <div
+                        class="w-20 h-20 bg-pink-600/10 rounded-full flex items-center justify-center mb-6 border border-pink-500/20">
+                        <i data-lucide="sparkles" class="w-10 h-10 text-pink-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">How can Epsilon help?</h3>
+                    <p class="max-w-md text-gray-400">Start a new conversation or pick up where you left off. Epsilon AI
+                        is powered by pollination technology.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <form id="chatForm" class="max-w-4xl mx-auto relative group">
+                    <input type="text" id="userInput"
+                        class="w-full bg-white/5 border border-pink-500/20 rounded-2xl pl-6 pr-16 py-4 md:py-5 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all shadow-2xl"
+                        placeholder="Type your message here...">
+                    <button type="submit"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-pink-600 hover:bg-pink-700 text-white rounded-xl flex items-center justify-center transition-all shadow-lg shadow-pink-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+                <p class="text-[10px] text-center mt-4 text-gray-600 uppercase tracking-widest font-bold">
+                    Epsilon AI may provide inaccurate information. Check important info.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col pink-glow">
+            <!-- Modal Header -->
+            <div class="border-b border-pink-500/10 p-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <i data-lucide="settings" class="w-6 h-6 text-pink-500"></i>
+                    AI Rules & Settings
+                </h2>
+                <button id="closeSettingsBtn" class="text-gray-400 hover:text-pink-500">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- User Profile Section -->
+                <div class="bg-pink-600/10 border border-pink-500/20 rounded-xl p-4">
+                    <div class="flex items-center gap-3">
+                        <img id="profilePic" src="" alt="Profile" class="w-12 h-12 rounded-lg object-cover">
+                        <div>
+                            <p class="text-sm font-semibold text-pink-400" id="displayName">Loading...</p>
+                            <p class="text-xs text-gray-500">Your profile from Epsilon</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-pink-400 mb-2 uppercase tracking-wider">Creator/Author
+                        Name</label>
+                    <input type="text" id="creatorName" placeholder="e.g., Epsilon AI"
+                        class="w-full bg-black/50 border border-pink-500/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition-all">
+                    <p class="text-xs text-gray-500 mt-1">The AI will reference this when asked who created it</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-pink-400 mb-2 uppercase tracking-wider">About You & Your
+                        Work</label>
+                    <textarea id="customRules"
+                        placeholder="Add information about yourself and your work that the AI should know. For example:&#10;- Your name and background&#10;- Your projects and accomplishments&#10;- Your expertise areas&#10;- Any specific guidelines&#10;&#10;The AI will use this context to personalize responses."
+                        class="w-full bg-black/50 border border-pink-500/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition-all h-48 resize-none"></textarea>
+                </div>
+
+                <div class="bg-blue-600/10 border border-blue-500/20 rounded-xl p-4">
+                    <p class="text-xs text-gray-400 mb-2">
+                        <i data-lucide="edit-2" class="w-4 h-4 inline mr-2"></i>
+                        To edit your display name or profile picture, visit:
+                    </p>
+                    <a href="https://epsilonhub.vercel.app" target="_blank"
+                        class="text-xs text-blue-400 hover:text-blue-300 underline font-semibold">
+                        https://epsilonhub.vercel.app
+                    </a>
+                </div>
+
+                <div class="bg-pink-600/10 border border-pink-500/20 rounded-xl p-4">
+                    <p class="text-xs text-gray-400">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-2"></i>
+                        These rules will be included in every message to the AI. Be specific about what you want it to
+                        know.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="border-t border-pink-500/10 p-6 flex gap-3">
+                <button id="resetSettingsBtn"
+                    class="flex-1 bg-gray-600/20 hover:bg-gray-600/30 text-gray-400 font-semibold py-3 rounded-xl transition-all">
+                    Reset to Default
+                </button>
+                <button id="saveSettingsBtn"
+                    class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-pink-600/20">
+                    Save Rules
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Copy Modal -->
+    <div id="codeCopyModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-2xl w-full pink-glow">
+            <!-- Modal Header -->
+            <div class="border-b border-pink-500/10 p-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <i data-lucide="code" class="w-6 h-6 text-pink-500"></i>
+                    Copy Code
+                </h2>
+                <button id="closeCodeModalBtn" class="text-gray-400 hover:text-pink-500">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <p class="text-xs text-gray-400 mb-4">Select and copy the code below:</p>
+                <textarea id="codeTextarea"
+                    class="w-full bg-black/50 border border-pink-500/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition-all h-64 resize-none font-mono text-sm"
+                    readonly></textarea>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="border-t border-pink-500/10 p-6 flex gap-3">
+                <button id="selectAllCodeBtn"
+                    class="flex-1 bg-gray-600/20 hover:bg-gray-600/30 text-gray-400 font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    Select All
+                </button>
+                <button id="closeCodeModalBtnFooter"
+                    class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-pink-600/20">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createClient } = supabase;
+        const supabaseClient = createClient('https://ycpteixmladknxndneho.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljcHRlaXhtbGFka254bmRuZWhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTA1MjYsImV4cCI6MjA5Mzk4NjUyNn0.LCy-JDnLoSHSmB7GgSoge4nRi0X6LgkUGF1WYMogRGQ');
+
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNav.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a chat is selected
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#chatsList button') || e.target.closest('#newChatBtn')) {
+                mobileNav.classList.add('hidden');
+            }
+        });
+
+        let currentUser = null;
+        let currentChatId = null;
+        let isSignUp = false;
+
+        const authPage = document.getElementById('authPage');
+        const chatPage = document.getElementById('chatPage');
+        const authForm = document.getElementById('authForm');
+        const toggleAuthMode = document.getElementById('toggleAuthMode');
+        const submitBtn = document.getElementById('submitBtn');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const chatsList = document.getElementById('chatsList');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const currentChatTitle = document.getElementById('currentChatTitle');
+        const welcomeState = document.getElementById('welcomeState');
+
+        // Settings Modal
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const resetSettingsBtn = document.getElementById('resetSettingsBtn');
+        const creatorName = document.getElementById('creatorName');
+        const customRules = document.getElementById('customRules');
+
+        // Default rules
+        const DEFAULT_CREATOR = 'Epsilon AI';
+        const DEFAULT_RULES = 'You are Epsilon AI, a helpful and knowledgeable AI assistant created by the user.';
+
+        // Load settings from localStorage (fallback)
+        function loadSettings() {
+            const saved = localStorage.getItem('epsilonAISettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                creatorName.value = settings.creator || DEFAULT_CREATOR;
+                customRules.value = settings.rules || DEFAULT_RULES;
+            } else {
+                creatorName.value = DEFAULT_CREATOR;
+                customRules.value = DEFAULT_RULES;
+            }
+        }
+
+        // Load settings from Supabase
+        async function loadSettingsFromSupabase() {
+            try {
+                if (!currentUser) return;
+
+                // Fetch user profile with ai_settings
+                const { data: profile, error } = await supabaseClient
+                    .from('profiles')
+                    .select('display_name, profile_pic, ai_settings')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading profile:', error);
+                    loadSettings();
+                    return;
+                }
+
+                // Load profile info
+                if (profile) {
+                    document.getElementById('displayName').textContent = profile.display_name || currentUser.email;
+                    if (profile.profile_pic) {
+                        document.getElementById('profilePic').src = profile.profile_pic;
+                        document.getElementById('profilePic').onerror = function () {
+                            this.style.display = 'none';
+                        };
+                    }
+
+                    // Load AI settings
+                    if (profile.ai_settings) {
+                        creatorName.value = profile.ai_settings.creator || DEFAULT_CREATOR;
+                        customRules.value = profile.ai_settings.rules || DEFAULT_RULES;
+                    } else {
+                        creatorName.value = DEFAULT_CREATOR;
+                        customRules.value = DEFAULT_RULES;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading from Supabase:', error);
+                loadSettings();
+            }
+        }
+
+        // Save settings to Supabase
+        async function saveSettingsToSupabase() {
+            try {
+                if (!currentUser) {
+                    alert('No user logged in');
+                    return;
+                }
+
+                const aiSettings = {
+                    creator: creatorName.value || DEFAULT_CREATOR,
+                    rules: customRules.value || DEFAULT_RULES
+                };
+
+                console.log('Saving AI settings:', aiSettings);
+                console.log('User ID:', currentUser.id);
+
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .update({ ai_settings: aiSettings })
+                    .eq('id', currentUser.id)
+                    .select();
+
+                if (error) {
+                    console.error('Error saving settings:', error);
+                    alert('Error saving settings: ' + error.message);
+                    throw error;
+                }
+
+                console.log('Settings saved successfully:', data);
+
+                // Also save to localStorage as backup
+                localStorage.setItem('epsilonAISettings', JSON.stringify(aiSettings));
+
+                return true;
+            } catch (error) {
+                console.error('Exception saving settings:', error);
+                throw error;
+            }
+        }
+
+        // Save settings to localStorage (fallback)
+        function saveSettingsToStorage() {
+            const settings = {
+                creator: creatorName.value || DEFAULT_CREATOR,
+                rules: customRules.value || DEFAULT_RULES
+            };
+            localStorage.setItem('epsilonAISettings', JSON.stringify(settings));
+        }
+
+        // Get current system prompt (load from localStorage with fallback)
+        function getSystemPrompt() {
+            const settings = JSON.parse(localStorage.getItem('epsilonAISettings') || '{}');
+            const creator = settings.creator || DEFAULT_CREATOR;
+            const customRulesText = settings.rules || DEFAULT_RULES;
+            return `You are an AI assistant created by ${creator}. Follow these guidelines:\n\n${customRulesText}`;
+        }
+
+        // Settings Modal Event Listeners
+        settingsBtn.addEventListener('click', async () => {
+            await loadSettingsFromSupabase();
+            settingsModal.classList.remove('hidden');
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+
+        saveSettingsBtn.addEventListener('click', async () => {
+            try {
+                saveSettingsBtn.disabled = true;
+                saveSettingsBtn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i>';
+                lucide.createIcons();
+
+                const result = await saveSettingsToSupabase();
+
+                if (result) {
+                    settingsModal.classList.add('hidden');
+                    alert('AI rules saved successfully!');
+                }
+            } catch (error) {
+                console.error('Failed to save settings:', error);
+                alert('Failed to save settings. Please try again.');
+            } finally {
+                saveSettingsBtn.disabled = false;
+                saveSettingsBtn.innerHTML = 'Save Rules';
+                lucide.createIcons();
+            }
+        });
+
+        resetSettingsBtn.addEventListener('click', () => {
+            if (confirm('Reset to default rules?')) {
+                creatorName.value = DEFAULT_CREATOR;
+                customRules.value = DEFAULT_RULES;
+            }
+        });
+
+        // Close modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.add('hidden');
+            }
+        });
+
+        // Code Copy Modal Event Listeners
+        const codeCopyModal = document.getElementById('codeCopyModal');
+        const closeCodeModalBtn = document.getElementById('closeCodeModalBtn');
+        const closeCodeModalBtnFooter = document.getElementById('closeCodeModalBtnFooter');
+        const selectAllCodeBtn = document.getElementById('selectAllCodeBtn');
+        const codeTextarea = document.getElementById('codeTextarea');
+
+        closeCodeModalBtn.addEventListener('click', () => {
+            codeCopyModal.classList.add('hidden');
+        });
+
+        closeCodeModalBtnFooter.addEventListener('click', () => {
+            codeCopyModal.classList.add('hidden');
+        });
+
+        selectAllCodeBtn.addEventListener('click', () => {
+            codeTextarea.select();
+            document.execCommand('copy');
+            
+            const originalText = selectAllCodeBtn.innerHTML;
+            selectAllCodeBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                selectAllCodeBtn.innerHTML = originalText;
+                lucide.createIcons();
+            }, 2000);
+        });
+
+        // Close modal when clicking outside
+        codeCopyModal.addEventListener('click', (e) => {
+            if (e.target === codeCopyModal) {
+                codeCopyModal.classList.add('hidden');
+            }
+        });
+
+        // Authentication Logic
+        async function checkSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                setupUI(session.user);
+            }
+        }
+
+        function setupUI(user) {
+            currentUser = user;
+            authPage.classList.add('hidden');
+            chatPage.classList.remove('hidden');
+            loadChats();
+            loadSettingsFromSupabase();
+        }
+
+        toggleAuthMode.addEventListener('click', () => {
+            isSignUp = !isSignUp;
+            submitBtn.querySelector('span').innerText = isSignUp ? 'Sign Up' : 'Sign In';
+            toggleAuthMode.innerText = isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up";
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i>';
+            lucide.createIcons();
+
+            try {
+                const { data, error } = isSignUp
+                    ? await supabaseClient.auth.signUp({ email, password })
+                    : await supabaseClient.auth.signInWithPassword({ email, password });
+
+                if (error) throw error;
+                if (data.user) setupUI(data.user);
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>${isSignUp ? 'Sign Up' : 'Sign In'}</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                lucide.createIcons();
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        // Chat Logic
+        async function loadChats() {
+            const { data: chats, error } = await supabaseClient
+                .from('chats')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) return console.error(error);
+
+            chatsList.innerHTML = chats.map(chat => `
+                <button onclick="selectChat('${chat.id}', '${chat.title.replace(/'/g, "\\'")}')" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-pink-600/10 group ${currentChatId === chat.id ? 'bg-pink-600/20 text-pink-400 border border-pink-500/20' : 'text-gray-400'}">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span class="truncate text-sm font-medium">${chat.title || 'New Chat'}</span>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        async function selectChat(id, title) {
+            currentChatId = id;
+            currentChatTitle.innerText = title;
+            welcomeState.style.display = 'none';
+            messagesContainer.innerHTML = '';
+
+            const { data: messages, error } = await supabaseClient
+                .from('messages')
+                .select('*')
+                .eq('chat_id', id)
+                .order('created_at', { ascending: true });
+
+            if (messages) {
+                messages.forEach(msg => appendMessage(msg.role, msg.content));
+            }
+            loadChats();
+        }
+
+        newChatBtn.addEventListener('click', () => {
+            currentChatId = null;
+            currentChatTitle.innerText = 'New Conversation';
+            messagesContainer.innerHTML = '';
+            welcomeState.style.display = 'flex';
+            userInput.focus();
+            loadChats();
+        });
+
+        function appendMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`;
+
+            const inner = document.createElement('div');
+            inner.className = `max-w-[85%] md:max-w-[70%] p-4 rounded-2xl ${role === 'user' ? 'message-user' : 'message-ai'}`;
+
+            const icon = role === 'user' ? 'user' : 'bot';
+            const color = role === 'user' ? 'text-pink-400' : 'text-gray-400';
+
+            // Parse content for code blocks and images
+            const parsedContent = parseMessageContent(content);
+
+            inner.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="${icon}" class="w-3.5 h-3.5 ${color}"></i>
+                    <span class="text-[10px] uppercase font-black tracking-widest ${color}">${role === 'user' ? 'You' : 'Epsilon'}</span>
+                </div>
+                <div class="text-sm md:text-base leading-relaxed whitespace-pre-wrap">${parsedContent}</div>
+            `;
+
+            div.appendChild(inner);
+            messagesContainer.appendChild(div);
+
+            // Highlight code blocks
+            inner.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightElement(block);
+            });
+
+            // Add copy button listeners
+            inner.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', copyCode);
+            });
+
+            // Add download button listeners
+            inner.querySelectorAll('.download-btn').forEach(btn => {
+                btn.addEventListener('click', downloadImage);
+            });
+
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        function parseMessageContent(content) {
+            let html = content;
+
+            // Replace code blocks with enhanced version
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                const language = lang || 'text';
+                const escapedCode = code.trim()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+
+                return `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>${language}</span>
+                            <button class="copy-btn" data-code="${escapedCode}">
+                                <i data-lucide="copy" class="w-3 h-3 inline"></i> Copy Code
+                            </button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-${language}">${escapedCode}</code></pre>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Replace image URLs with download-enabled images
+            html = html.replace(/!\[.*?\]\((https:\/\/[^\s)]+)\)|<img[^>]*src="(https:\/\/[^"]+)"[^>]*>/g, (match, url1, url2) => {
+                const imageUrl = url1 || url2;
+                if (imageUrl) {
+                    return `
+                        <div class="image-message">
+                            <div class="image-container">
+                                <img src="${imageUrl}" alt="Generated image" onerror="this.style.display='none'">
+                                <div class="image-controls">
+                                    <button class="image-btn download-btn" data-image-url="${imageUrl}">
+                                        <i data-lucide="download" class="w-3 h-3"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return match;
+            });
+
+            return html;
+        }
+
+        function copyCode(e) {
+            const code = e.currentTarget.getAttribute('data-code');
+            const codeTextarea = document.getElementById('codeTextarea');
+            const codeCopyModal = document.getElementById('codeCopyModal');
+            
+            // Set the code in textarea
+            codeTextarea.value = code;
+            
+            // Show modal
+            codeCopyModal.classList.remove('hidden');
+            
+            // Auto-select all text
+            setTimeout(() => {
+                codeTextarea.select();
+            }, 100);
+        }
+
+        function downloadImage(e) {
+            const imageUrl = e.currentTarget.getAttribute('data-image-url');
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = `epsilon-image-${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            userInput.value = '';
+            welcomeState.style.display = 'none';
+
+            if (!currentChatId) {
+                const { data: chat, error } = await supabaseClient
+                    .from('chats')
+                    .insert([{ user_id: currentUser.id, title: text.substring(0, 30) }])
+                    .select()
+                    .single();
+
+                if (error) return alert(error.message);
+                currentChatId = chat.id;
+                currentChatTitle.innerText = chat.title;
+            }
+
+            // Save user message
+            await supabaseClient.from('messages').insert([
+                { chat_id: currentChatId, role: 'user', content: text }
+            ]);
+            appendMessage('user', text);
+
+            // Typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex justify-start';
+            typingDiv.innerHTML = `
+                <div class="message-ai p-4 rounded-2xl flex gap-1 items-center">
+                    <div class="typing-dot" style="animation-delay: 0s"></div>
+                    <div class="typing-dot" style="animation-delay: 0.2s"></div>
+                    <div class="typing-dot" style="animation-delay: 0.4s"></div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+
+            try {
+                // Check if user is asking for image generation
+                const imageKeywords = ['generate', 'create', 'draw', 'image', 'picture', 'photo', 'visual', 'illustration'];
+                const isImageRequest = imageKeywords.some(keyword => text.toLowerCase().includes(keyword));
+
+                let aiResponse = '';
+
+                if (isImageRequest) {
+                    // First, get AI description/refinement
+                    const descriptionResponse = await fetch('https://text.pollinations.ai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messages: [
+                                { role: 'system', content: 'You are a creative prompt engineer. Convert user requests into detailed, vivid image generation prompts. Keep it concise but descriptive. Respond with ONLY the image prompt.' },
+                                { role: 'user', content: text }
+                            ],
+                            model: 'openai'
+                        })
+                    });
+
+                    const descriptionData = await descriptionResponse.json();
+                    const imagePrompt = descriptionData.choices[0].message.content;
+
+                    // Generate image using Pollinations API
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=768&height=768&seed=${Math.random()}`;
+
+                    aiResponse = `I've generated an image based on your request:\n\n![Generated Image](${imageUrl})\n\n**Prompt used:** ${imagePrompt}`;
+                } else {
+                    // Regular text response
+                    const response = await fetch('https://text.pollinations.ai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messages: [
+                                { role: 'system', content: getSystemPrompt() },
+                                { role: 'user', content: text }
+                            ],
+                            model: 'openai'
+                        })
+                    });
+
+                    const data = await response.json();
+                    aiResponse = data.choices[0].message.content;
+                }
+
+                messagesContainer.removeChild(typingDiv);
+
+                // Save AI message
+                await supabaseClient.from('messages').insert([
+                    { chat_id: currentChatId, role: 'ai', content: aiResponse }
+                ]);
+                appendMessage('ai', aiResponse);
+            } catch (error) {
+                messagesContainer.removeChild(typingDiv);
+                appendMessage('ai', "Sorry, I'm having trouble connecting to my neural core right now.");
+            }
+            loadChats();
+        });
+
+        checkSession();
+    </script>
+</body>
+
+</html>
