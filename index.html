@@ -195,6 +195,112 @@
         .image-btn:hover {
             background: rgba(244, 114, 182, 0.8);
         }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #000;
+            color: #fff;
+        }
+
+        body.dark-mode .glass {
+            background: rgba(15, 15, 15, 0.7);
+            border: 1px solid rgba(244, 114, 182, 0.1);
+        }
+
+        body.dark-mode .message-ai {
+            background: rgba(31, 31, 31, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        body.light-mode .bg-mesh {
+            background-image:
+                radial-gradient(at 0% 0%, rgba(190, 24, 93, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(131, 24, 67, 0.05) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(245, 245, 247, 1) 0px, transparent 100%);
+        }
+
+        body.light-mode .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+        body.light-mode .message-user {
+            background: rgba(244, 114, 182, 0.1);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+
+        body.light-mode .message-ai {
+            background: rgba(245, 245, 247, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .code-block {
+            background: rgba(245, 245, 247, 0.8);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+        body.light-mode .code-content code {
+            color: #333;
+        }
+
+        body.light-mode input {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #1d1d1f !important;
+        }
+
+        body.light-mode input::placeholder {
+            color: #999 !important;
+        }
+
+        body.light-mode .text-gray-400 {
+            color: #666 !important;
+        }
+
+        body.light-mode .text-gray-500 {
+            color: #777 !important;
+        }
+
+        body.light-mode .text-gray-600 {
+            color: #888 !important;
+        }
+
+        body.light-mode .border-pink-500\/10 {
+            border-color: rgba(244, 114, 182, 0.3) !important;
+        }
+
+        .theme-toggle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(244, 114, 182, 0.2);
+            background: rgba(244, 114, 182, 0.1);
+            color: #f472b6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(244, 114, 182, 0.2);
+            border-color: rgba(244, 114, 182, 0.4);
+        }
+
+        body.light-mode .theme-toggle-btn {
+            color: #f472b6;
+            background: rgba(244, 114, 182, 0.15);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
     </style>
 </head>
 
@@ -293,6 +399,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
+                    <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark/light mode">
+                        <i data-lucide="sun" class="w-5 h-5 hidden" id="sunIcon"></i>
+                        <i data-lucide="moon" class="w-5 h-5" id="moonIcon"></i>
+                    </button>
                     <button id="settingsBtn" class="text-gray-400 hover:text-pink-500 transition-colors">
                         <i data-lucide="settings" class="w-5 h-5"></i>
                     </button>
@@ -318,11 +428,13 @@
             <div id="toolsContainer" class="hidden flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scrollbar-hide">
                 <div class="max-w-6xl mx-auto">
                     <div class="flex items-center gap-4 mb-8">
-                        <div class="w-12 h-12 bg-pink-600/20 rounded-2xl flex items-center justify-center border border-pink-500/30">
+                        <div
+                            class="w-12 h-12 bg-pink-600/20 rounded-2xl flex items-center justify-center border border-pink-500/30">
                             <i data-lucide="grid" class="w-6 h-6 text-pink-500"></i>
                         </div>
                         <div>
-                            <h2 class="text-3xl font-bold tracking-tight">Epsilon <span class="text-pink-500">AI Tools</span></h2>
+                            <h2 class="text-3xl font-bold tracking-tight">Epsilon <span class="text-pink-500">AI
+                                    Tools</span></h2>
                             <p class="text-gray-400">Smaller AI tools powered by Pollinations</p>
                         </div>
                     </div>
@@ -1102,6 +1214,48 @@
         });
 
         checkSession();
+
+        // Theme Toggle Functionality
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const body = document.body;
+
+        // Check for saved theme preference or system preference
+        const initializeTheme = () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.add('dark-mode');
+                body.classList.remove('light-mode');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+            }
+        };
+
+        // Toggle theme on button click
+        themeToggleBtn.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+            }
+        });
+
+        // Initialize theme on page load
+        initializeTheme();
     </script>
 </body>
 
