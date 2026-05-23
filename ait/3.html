@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>εpsilon editz AI - Ultimate Image Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            yellow: '#FBBF24', // Amber 400
+                            lightyellow: '#FEF08A', // Yellow 200
+                            dark: '#0B0F19',
+                            card: '#151D30',
+                            border: '#2A364F'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-yellow': '0 0 20px rgba(251, 191, 36, 0.25)',
+                        'neon-yellow-strong': '0 0 30px rgba(251, 191, 36, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A364F;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FBBF24;
+        }
+        
+        /* Shimmer loading animation */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-bg {
+            background: linear-gradient(90deg, #151D30 25%, #222E4B 50%, #151D30 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        /* Ambient Glow Backgrounds */
+        .ambient-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glow effects -->
+    <div class="ambient-glow top-10 left-[-100px]"></div>
+    <div class="ambient-glow bottom-20 right-[-100px]"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-brand-border/40 bg-brand-dark/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-yellow to-white p-[2px] shadow-neon-yellow transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center">
+                        <span class="font-tech text-2xl font-black text-brand-yellow">ε</span>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-tech text-xl font-black tracking-wider uppercase text-white flex items-center gap-1.5">
+                        Epsilon <span class="text-brand-yellow">Editz</span> <span class="text-xs bg-brand-yellow/10 text-brand-yellow px-1.5 py-0.5 rounded border border-brand-yellow/20">AI</span>
+                    </h1>
+                    <p class="text-[10px] text-gray-400 font-medium uppercase tracking-widest -mt-0.5">Pollinations Core Engine</p>
+                </div>
+            </div>
+
+            <!-- Header Utility Links -->
+            <div class="flex items-center space-x-4">
+                <a href="#gallery" class="hidden sm:flex items-center space-x-1.5 text-sm text-gray-300 hover:text-brand-yellow transition">
+                    <i class="fa-regular fa-images"></i>
+                    <span>My Gallery</span>
+                </a>
+                <div class="h-5 w-[1px] bg-brand-border/60 hidden sm:block"></div>
+                <div class="flex items-center space-x-2 text-xs text-gray-400 bg-brand-card px-3 py-1.5 rounded-lg border border-brand-border/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Pollinations AI Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Interactive Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        
+        <!-- Welcome Banner Info -->
+        <div class="mb-8 text-center sm:text-left">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                Empower Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-white">Imagination</span>
+            </h2>
+            <p class="text-gray-400 mt-2 text-sm sm:text-base max-w-2xl">
+                Create stunning high-fidelity images instantly. Type your vision below, select epsilon-tuned presets, and let our Pollinations AI model brew the visual magic.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Side Control Panel (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Main Generation Card -->
+                <div class="bg-brand-card/60 backdrop-blur-md border border-brand-border/60 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    
+                    <!-- Decorative corner borders -->
+                    <div class="absolute top-0 left-0 w-8 h-[2px] bg-brand-yellow"></div>
+                    <div class="absolute top-0 left-0 w-[2px] h-8 bg-brand-yellow"></div>
+                    
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label for="promptInput" class="text-sm font-semibold tracking-wide text-brand-lightyellow uppercase flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-brand-yellow"></i>
+                                Enter Prompt Vision
+                            </label>
+                            <span id="charCount" class="text-xs text-gray-500">0 / 500 chars</span>
+                        </div>
+                        
+                        <!-- Rich Textarea -->
+                        <div class="relative">
+                            <textarea id="promptInput" rows="4" 
+                                class="w-full bg-brand-dark/90 text-white placeholder-gray-500 border border-brand-border/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition resize-none leading-relaxed"
+                                placeholder="A majestic white and gold mechanical owl with glowing yellow eyes perched on a neon branch inside a futuristic cyber city..."></textarea>
+                            
+                            <!-- Prompt helper buttons inside container -->
+                            <div class="absolute bottom-3 right-3 flex items-center space-x-2">
+                                <button id="clearPromptBtn" class="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-gray-400 hover:text-white transition text-xs" title="Clear Prompt">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                <button id="randomPromptBtn" class="px-3 py-1 rounded-lg bg-brand-yellow hover:bg-yellow-500 text-brand-dark font-bold text-xs transition flex items-center space-x-1" title="Get Random Prompt">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span>Randomize</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Style Preset Chips -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest block">Style Boosters:</span>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="injectStyle('cinematic, high realism, 8k resolution, photorealistic, dramatic dramatic yellow backlighting')" 
+                                    class="px-3 py-1.5 rounded-lg bg-brand-border/40 hover:bg-brand-yellow hover:text-brand-dark text-xs font-medium border border-brand-border/60 transition flex items-center space-x-1.5">
+                                    🎬 <span>Cinematic Realism</span>
+                                </button>
+                                <button onclick="injectStyle('futuristic scifi, cybernetic elements, neon yellow glow highlights, 3d render, unreal engine 5 style')" 
+                                    class="px-3 py-1.5 rounded-lg bg-brand-border/40 hover:bg-brand-yellow hover:text-brand-dark text-xs font-medium border border-brand-border/60 transition flex items-center space-x-1.5">
+                                    🤖 <span>Cyber Future</span>
+                                </button>
+                                <button onclick="injectStyle('japanese vintage anime style, hand-drawn detailing, golden light beams, studio ghibli aesthetic')" 
+                                    class="px-3 py-1.5 rounded-lg bg-brand-border/40 hover:bg-brand-yellow hover:text-brand-dark text-xs font-medium border border-brand-border/60 transition flex items-center space-x-1.5">
+                                    🌸 <span>Classic Anime</span>
+                                </button>
+                                <button onclick="injectStyle('beautiful watercolor illustration, splattered ink, golden yellow highlights, elegant white background')" 
+                                    class="px-3 py-1.5 rounded-lg bg-brand-border/40 hover:bg-brand-yellow hover:text-brand-dark text-xs font-medium border border-brand-border/60 transition flex items-center space-x-1.5">
+                                    🎨 <span>Watercolor Art</span>
+                                </button>
+                                <button onclick="injectStyle('surreal 3D abstract concept art, hyper detailed, organic shapes, yellow obsidian crystals, smooth lighting')" 
+                                    class="px-3 py-1.5 rounded-lg bg-brand-border/40 hover:bg-brand-yellow hover:text-brand-dark text-xs font-medium border border-brand-border/60 transition flex items-center space-x-1.5">
+                                    💎 <span>Abstract 3D</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Parameters Card -->
+                <div class="bg-brand-card/60 backdrop-blur-md border border-brand-border/60 rounded-2xl p-6 shadow-xl space-y-6">
+                    <h3 class="text-md font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-brand-yellow"></i>
+                        Epsilon Engine Parameters
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Aspect Ratio Selector -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-widest flex justify-between">
+                                <span>Aspect Ratio</span>
+                                <span id="ratioDisplay" class="text-brand-yellow">1:1 (Square)</span>
+                            </label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button type="button" onclick="setRatio('1:1', 1024, 1024, this)" class="ratio-btn py-2 px-1 rounded-lg bg-brand-dark border-2 border-brand-yellow text-white text-xs font-medium text-center transition flex flex-col items-center justify-center space-y-1">
+                                    <span class="w-4 h-4 border-2 border-white rounded-sm"></span>
+                                    <span>1:1</span>
+                                </button>
+                                <button type="button" onclick="setRatio('16:9', 1024, 576, this)" class="ratio-btn py-2 px-1 rounded-lg bg-brand-dark border border-brand-border text-gray-400 text-xs font-medium text-center transition flex flex-col items-center justify-center space-y-1">
+                                    <span class="w-6 h-3 border-2 border-gray-400 rounded-sm"></span>
+                                    <span>16:9</span>
+                                </button>
+                                <button type="button" onclick="setRatio('9:16', 576, 1024, this)" class="ratio-btn py-2 px-1 rounded-lg bg-brand-dark border border-brand-border text-gray-400 text-xs font-medium text-center transition flex flex-col items-center justify-center space-y-1">
+                                    <span class="w-3 h-6 border-2 border-gray-400 rounded-sm"></span>
+                                    <span>9:16</span>
+                                </button>
+                                <button type="button" onclick="setRatio('4:3', 1024, 768, this)" class="ratio-btn py-2 px-1 rounded-lg bg-brand-dark border border-brand-border text-gray-400 text-xs font-medium text-center transition flex flex-col items-center justify-center space-y-1">
+                                    <span class="w-5 h-4 border-2 border-gray-400 rounded-sm"></span>
+                                    <span>4:3</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="space-y-2">
+                            <label for="modelSelect" class="text-xs font-semibold text-gray-400 uppercase tracking-widest block">AI Model Architecture</label>
+                            <div class="relative">
+                                <select id="modelSelect" class="w-full bg-brand-dark text-white border border-brand-border rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-brand-yellow transition appearance-none">
+                                    <option value="flux" selected>Flux Core (Default - Ultra Crisp)</option>
+                                    <option value="flux-realism">Flux Realism (Lifelike Portraiture)</option>
+                                    <option value="flux-anime">Flux Anime (Manga & Classic Cell Shade)</option>
+                                    <option value="flux-3d">Flux 3D (CGI Movie Character Render)</option>
+                                    <option value="turbo">Turbo Speed (Fastest Iteration)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
+                                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <!-- Seed Customization -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-widest flex justify-between">
+                                <span>Engine Seed</span>
+                                <span class="text-gray-500 font-mono text-[10px]">Deterministic Output</span>
+                            </label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="seedInput" value="-1" class="w-full bg-brand-dark text-white border border-brand-border rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-brand-yellow transition" placeholder="-1 for random">
+                                <button type="button" onclick="randomizeSeed()" class="px-3 rounded-lg bg-brand-dark border border-brand-border text-gray-300 hover:text-brand-yellow transition" title="Randomize Seed">
+                                    <i class="fa-solid fa-shuffle text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Enhancements Switch -->
+                        <div class="space-y-2 flex flex-col justify-end">
+                            <div class="flex items-center justify-between p-3 bg-brand-dark rounded-lg border border-brand-border/85">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold text-white tracking-wide">Enhance Prompt Detail</span>
+                                    <span class="text-[10px] text-gray-400">Appends optimized quality keywords</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="enhanceToggle" class="sr-only peer" checked>
+                                    <div class="w-9 h-5 bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-yellow peer-checked:after:bg-brand-dark"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Generate Action Button -->
+                    <div class="pt-4">
+                        <button id="generateBtn" class="w-full bg-gradient-to-r from-brand-yellow via-amber-400 to-white hover:brightness-110 active:scale-[0.98] text-brand-dark font-tech font-black uppercase text-sm tracking-wider py-4 rounded-xl shadow-neon-yellow transition-all duration-300 flex items-center justify-center space-x-3">
+                            <i class="fa-solid fa-wand-magic-sparkles text-lg animate-spin-slow"></i>
+                            <span>Ignite Generation</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right Side Output Display (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Main Preview Frame -->
+                <div class="bg-brand-card/60 backdrop-blur-md border border-brand-border/60 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
+                    
+                    <!-- Decorative border accents -->
+                    <div class="absolute top-0 right-0 w-8 h-[2px] bg-brand-yellow"></div>
+                    <div class="absolute top-0 right-0 w-[2px] h-8 bg-brand-yellow"></div>
+
+                    <!-- Output Canvas Wrapper -->
+                    <div class="w-full h-full flex flex-col items-center justify-center relative">
+                        
+                        <!-- Initial Placeholder State -->
+                        <div id="previewPlaceholder" class="flex flex-col items-center justify-center text-center p-8 space-y-4">
+                            <div class="w-20 h-20 rounded-full bg-brand-dark/80 border border-brand-border flex items-center justify-center text-brand-yellow shadow-neon-yellow">
+                                <i class="fa-solid fa-photo-film text-3xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-tech text-md uppercase font-bold text-white tracking-wide">Epsilon Output Viewport</h4>
+                                <p class="text-xs text-gray-400 mt-2 max-w-xs mx-auto">Input your prompt creative, configure options, and trigger the action button to render your creation.</p>
+                            </div>
+                        </div>
+
+                        <!-- Loading State Layer -->
+                        <div id="previewLoader" class="hidden flex-col items-center justify-center text-center p-8 space-y-6 absolute inset-0 z-20 bg-brand-dark/95 backdrop-blur-sm rounded-xl">
+                            <!-- Premium Tech Spinner -->
+                            <div class="relative w-24 h-24">
+                                <div class="absolute inset-0 rounded-full border-4 border-brand-border"></div>
+                                <div class="absolute inset-0 rounded-full border-4 border-t-brand-yellow border-r-transparent animate-spin"></div>
+                                <div class="absolute inset-2 rounded-full border-2 border-dashed border-gray-600 animate-pulse"></div>
+                                <div class="absolute inset-0 flex items-center justify-center font-tech text-xl text-brand-yellow">ε</div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <h4 class="font-tech text-sm uppercase tracking-wider text-white">Synthesizing Pixels...</h4>
+                                <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Contacting Pollinations Node</p>
+                            </div>
+
+                            <!-- Live Simulated Progress Details -->
+                            <div class="w-48 bg-brand-dark rounded-full h-1.5 border border-brand-border/80 overflow-hidden">
+                                <div id="loaderProgressBar" class="bg-brand-yellow h-full w-0 transition-all duration-300"></div>
+                            </div>
+                            <span id="loaderProgressText" class="text-[10px] font-mono text-brand-yellow uppercase">0% Initializing</span>
+                        </div>
+
+                        <!-- Main Render Output Display -->
+                        <div id="previewSuccess" class="hidden w-full space-y-4">
+                            <div class="relative rounded-xl overflow-hidden group shadow-lg border border-brand-border/60 bg-brand-dark/60">
+                                <img id="renderedImage" src="" alt="AI Rendered Content" class="w-full h-auto object-contain max-h-[480px] mx-auto transition duration-500 ease-out group-hover:scale-[1.01]">
+                                
+                                <!-- Decorative Badge on overlay -->
+                                <div class="absolute top-3 left-3 bg-brand-dark/80 backdrop-blur-md px-3 py-1 rounded-lg border border-brand-yellow/30 text-[10px] uppercase font-tech font-bold text-brand-yellow tracking-wider shadow-md">
+                                    <span id="successModelDisplay">Flux Engine</span>
+                                </div>
+                            </div>
+
+                            <!-- Core Controls for Generated Output -->
+                            <div class="grid grid-cols-3 gap-2">
+                                <button id="downloadBtn" class="flex items-center justify-center space-x-1.5 bg-neutral-900 hover:bg-neutral-800 text-white border border-brand-border py-2.5 rounded-lg text-xs font-semibold tracking-wide transition">
+                                    <i class="fa-solid fa-download text-brand-yellow"></i>
+                                    <span>Download</span>
+                                </button>
+                                <button id="saveGalleryBtn" class="flex items-center justify-center space-x-1.5 bg-neutral-900 hover:bg-neutral-800 text-white border border-brand-border py-2.5 rounded-lg text-xs font-semibold tracking-wide transition">
+                                    <i class="fa-solid fa-bookmark text-brand-yellow"></i>
+                                    <span>Save Creative</span>
+                                </button>
+                                <button id="shareBtn" class="flex items-center justify-center space-x-1.5 bg-neutral-900 hover:bg-neutral-800 text-white border border-brand-border py-2.5 rounded-lg text-xs font-semibold tracking-wide transition">
+                                    <i class="fa-solid fa-share-nodes text-brand-yellow"></i>
+                                    <span>Copy URL</span>
+                                </button>
+                            </div>
+
+                            <!-- Image Metadata Summary -->
+                            <div class="p-3 bg-brand-dark/90 rounded-lg border border-brand-border/80 space-y-2 text-xs">
+                                <div class="flex justify-between border-b border-brand-border/40 pb-1.5">
+                                    <span class="text-gray-400">Target Size</span>
+                                    <span id="metaDimensions" class="font-mono text-gray-200">1024 x 1024 px</span>
+                                </div>
+                                <div class="flex justify-between border-b border-brand-border/40 pb-1.5">
+                                    <span class="text-gray-400">System Seed</span>
+                                    <span id="metaSeed" class="font-mono text-gray-200">76840391057</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="text-gray-400 block">Final Output Prompt</span>
+                                    <div class="flex items-start justify-between gap-2 bg-brand-card/60 p-2 rounded border border-brand-border/30">
+                                        <p id="metaPrompt" class="text-[11px] text-gray-300 leading-normal truncate-multiline max-h-16 overflow-y-auto w-full select-all">Prompt details...</p>
+                                        <button onclick="copyMetaPrompt()" class="text-gray-500 hover:text-brand-yellow p-1" title="Copy Prompt Text">
+                                            <i class="fa-regular fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- User Gallery Section -->
+        <section id="gallery" class="mt-16 pt-8 border-t border-brand-border/40 relative z-10">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                <div class="text-center sm:text-left">
+                    <h3 class="font-tech text-2xl font-black tracking-wide text-white flex items-center gap-2">
+                        <i class="fa-solid fa-images text-brand-yellow"></i>
+                        Epsilon Creative Gallery
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-1">Images you generate and pin down inside this browser workspace session.</p>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <button id="clearGalleryBtn" class="px-3.5 py-1.5 bg-neutral-900 border border-neutral-800 hover:bg-rose-950/20 hover:border-rose-900/50 hover:text-rose-400 text-xs text-gray-300 font-medium rounded-lg transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-trash-can text-[10px]"></i>
+                        <span>Clear Gallery</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty Gallery Alert -->
+            <div id="emptyGalleryState" class="bg-brand-card/30 border border-brand-border/30 rounded-2xl p-12 text-center max-w-lg mx-auto flex flex-col items-center justify-center space-y-4">
+                <div class="w-14 h-14 rounded-full bg-brand-dark/80 flex items-center justify-center text-gray-500 border border-brand-border/60">
+                    <i class="fa-regular fa-folder-open text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white">Your Workspace Canvas is Clean</h4>
+                    <p class="text-xs text-gray-400 mt-1">Generated masterpieces that you "Save Creative" will show up here permanently in storage.</p>
+                </div>
+            </div>
+
+            <!-- Populated Gallery Grid -->
+            <div id="galleryGrid" class="hidden grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Injected via JavaScript dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Fullscreen Image Viewer Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-brand-dark/95 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-4">
+        <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 rounded-full bg-brand-card/90 border border-brand-border/60 text-white hover:text-brand-yellow transition flex items-center justify-center shadow-lg" title="Close Overlay">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        
+        <div class="max-w-4xl w-full flex flex-col items-center justify-center space-y-4">
+            <div class="relative overflow-hidden rounded-xl border border-brand-border/80 shadow-2xl bg-brand-dark/40 max-h-[80vh] flex items-center justify-center">
+                <img id="modalImg" src="" alt="Fullscreen Expanded View" class="max-w-full max-h-[75vh] object-contain">
+            </div>
+            
+            <div class="bg-brand-card/90 border border-brand-border/85 rounded-xl p-4 w-full max-w-2xl space-y-3">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-mono text-brand-yellow uppercase tracking-widest">Saved Creation Specification</span>
+                        <p id="modalPrompt" class="text-xs text-white leading-relaxed select-all">Prompt detail goes here.</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-gray-400 border-t border-brand-border/40 pt-2 font-mono">
+                    <div>
+                        <span>Seed: <span id="modalSeed" class="text-brand-yellow">N/A</span></span>
+                    </div>
+                    <div>
+                        <button onclick="downloadFromModal()" class="px-3 py-1 bg-brand-yellow hover:bg-yellow-500 text-brand-dark font-sans font-bold rounded transition flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Footer -->
+    <footer class="border-t border-brand-border/30 bg-brand-dark mt-24 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <p class="font-tech text-xs tracking-widest text-brand-yellow font-semibold uppercase">εpsilon editz AI • Powered by Pollinations Engine</p>
+            <p class="text-[10px] text-gray-500 max-w-md mx-auto">This project integrates direct neural models from the Pollinations decentralized cloud system. All generations are free, unrestricted, and ultra high fidelity.</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast Element -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-brand-card border-l-4 border-brand-yellow border-y border-r border-brand-border px-4 py-3 rounded shadow-2xl transform translate-y-24 opacity-0 transition duration-300 ease-out z-[90] flex items-center space-x-3 max-w-sm">
+        <i class="fa-solid fa-circle-check text-brand-yellow"></i>
+        <span id="toastMessage" class="text-xs font-semibold text-white">System notification text</span>
+    </div>
+
+    <!-- Core Application Logic Script -->
+    <script>
+        // Set Default Configuration Values
+        let currentRatio = '1:1';
+        let currentWidth = 1024;
+        let currentHeight = 1024;
+        let generatedBlobUrl = null;
+        let generationInProgress = false;
+
+        // Custom list of interesting initial prompts
+        const samplePrompts = [
+            "A cosmic fox composed of pure golden energy racing through a stark white nebula, futuristic high resolution vector line art style.",
+            "Cybernetic ninja warrior wielding dual yellow laser katanas inside a white futuristic temple, detailed matte-painting style, unreal engine 5 render.",
+            "A breathtaking majestic lion sitting proudly on a dark rock surrounded by golden mist and white light rays, ultra realistic 3d style.",
+            "Minimalist scifi apartment with modern architecture, black obsidian furniture, yellow warm lighting, massive glass windows revealing a hyper realistic snowy cityscape.",
+            "A futuristic concept mechanical hoverbike designed with sleek white carbon fiber panels and striking yellow trim lines, isolated on dark glossy surface."
+        ];
+
+        // UI Element References
+        const promptInput = document.getElementById('promptInput');
+        const charCount = document.getElementById('charCount');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+        const previewLoader = document.getElementById('previewLoader');
+        const previewSuccess = document.getElementById('previewSuccess');
+        const renderedImage = document.getElementById('renderedImage');
+        const loaderProgressBar = document.getElementById('loaderProgressBar');
+        const loaderProgressText = document.getElementById('loaderProgressText');
+        const metaDimensions = document.getElementById('metaDimensions');
+        const metaSeed = document.getElementById('metaSeed');
+        const metaPrompt = document.getElementById('metaPrompt');
+        const successModelDisplay = document.getElementById('successModelDisplay');
+        const seedInput = document.getElementById('seedInput');
+
+        // Initial setup on Window Load
+        window.onload = function() {
+            // Apply a random initial prompt from list
+            const index = Math.floor(Math.random() * samplePrompts.length);
+            promptInput.value = samplePrompts[index];
+            updateCharCount();
+            
+            // Attach event listeners
+            promptInput.addEventListener('input', updateCharCount);
+            document.getElementById('clearPromptBtn').addEventListener('click', clearPrompt);
+            document.getElementById('randomPromptBtn').addEventListener('click', randomizePrompt);
+            document.getElementById('generateBtn').addEventListener('click', triggerImageGeneration);
+            document.getElementById('downloadBtn').addEventListener('click', downloadRenderedImage);
+            document.getElementById('saveGalleryBtn').addEventListener('click', saveToGallery);
+            document.getElementById('shareBtn').addEventListener('click', shareImageLink);
+            document.getElementById('clearGalleryBtn').addEventListener('click', clearLocalGallery);
+
+            // Populate workspace gallery on load
+            renderGallery();
+        };
+
+        // Track prompt char count
+        function updateCharCount() {
+            const count = promptInput.value.length;
+            charCount.textContent = `${count} / 500 chars`;
+        }
+
+        // Clean Prompt Textbox
+        function clearPrompt() {
+            promptInput.value = '';
+            updateCharCount();
+            showToast("Workspace Prompt cleared.", "info");
+        }
+
+        // Apply a random sample prompt
+        function randomizePrompt() {
+            const index = Math.floor(Math.random() * samplePrompts.length);
+            promptInput.value = samplePrompts[index];
+            updateCharCount();
+            showToast("Applied a new creative idea!", "success");
+        }
+
+        // Style presets helper
+        function injectStyle(styleString) {
+            let currentText = promptInput.value.trim();
+            if (currentText.length > 0 && !currentText.endsWith(',')) {
+                currentText += ', ';
+            }
+            promptInput.value = currentText + styleString;
+            updateCharCount();
+            showToast("Epsilon style boosters injected!", "success");
+        }
+
+        // Change aspect ratio configuration
+        function setRatio(ratio, w, h, btnElement) {
+            currentRatio = ratio;
+            currentWidth = w;
+            currentHeight = h;
+            
+            document.getElementById('ratioDisplay').textContent = `${ratio} (${ratio === '1:1' ? 'Square' : ratio === '16:9' ? 'Widescreen' : ratio === '9:16' ? 'Vertical Banner' : 'Classic'})`;
+            
+            // Reset active style status
+            document.querySelectorAll('.ratio-btn').forEach(btn => {
+                btn.classList.remove('border-brand-yellow', 'text-white');
+                btn.classList.add('border-brand-border', 'text-gray-400');
+            });
+            
+            // Highlight current clicked
+            btnElement.classList.remove('border-brand-border', 'text-gray-400');
+            btnElement.classList.add('border-brand-yellow', 'text-white');
+        }
+
+        // Generate dynamic seeds
+        function randomizeSeed() {
+            const newSeed = Math.floor(Math.random() * 9999999999) + 1000000000;
+            seedInput.value = newSeed;
+            showToast("Epsilon dynamic seed randomized!", "info");
+        }
+
+        // Trigger Async generation API call to Pollinations node
+        async function triggerImageGeneration() {
+            if (generationInProgress) return;
+
+            const promptText = promptInput.value.trim();
+            if (!promptText) {
+                showToast("You cannot generate an empty canvas. Please write a prompt first!", "error");
+                return;
+            }
+
+            generationInProgress = true;
+            toggleGenerationState(true);
+
+            // Construct final prompt with enhancement logic
+            const useEnhancement = document.getElementById('enhanceToggle').checked;
+            const enhancedAddition = ", elegant hyperrealistic details, masterpiece, sharp focus, vibrant contrast, 8k resolution, volumetric natural lighting";
+            const processedPrompt = useEnhancement ? (promptText + enhancedAddition) : promptText;
+
+            // Resolve seed
+            let activeSeed = parseInt(seedInput.value);
+            if (activeSeed < 0 || isNaN(activeSeed)) {
+                activeSeed = Math.floor(Math.random() * 999999999) + 1;
+            }
+
+            // Resolve selected Model
+            const modelSelect = document.getElementById('modelSelect').value;
+
+            // Step-by-step progress simulation to hook user immersion
+            startProgressSimulation();
+
+            try {
+                // Pollinations API prompt structure: https://image.pollinations.ai/prompt/{prompt}?width={w}&height={h}&seed={seed}&model={model}&nologo=true
+                const encodedPrompt = encodeURIComponent(processedPrompt);
+                const queryParams = `?width=${currentWidth}&height=${currentHeight}&seed=${activeSeed}&model=${modelSelect}&nologo=true`;
+                const requestUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}${queryParams}`;
+
+                // Fetch image stream directly as blob to manage loading properly
+                const response = await fetch(requestUrl);
+                if (!response.ok) {
+                    throw new Error("Target generation node timed out or refused connection.");
+                }
+
+                const imageBlob = await response.blob();
+                
+                // Clear old URL if existing to release browser memory
+                if (generatedBlobUrl) {
+                    URL.revokeObjectURL(generatedBlobUrl);
+                }
+
+                generatedBlobUrl = URL.createObjectURL(imageBlob);
+
+                // Update viewport values
+                renderedImage.src = generatedBlobUrl;
+                metaDimensions.textContent = `${currentWidth} x ${currentHeight} px`;
+                metaSeed.textContent = activeSeed;
+                metaPrompt.textContent = promptText;
+                successModelDisplay.textContent = `${modelSelect.toUpperCase()} Engine`;
+
+                // Handle loading completion callback
+                renderedImage.onload = () => {
+                    completeProgressSimulation();
+                };
+
+            } catch (err) {
+                console.error("Epsilon Core Generation Failure: ", err);
+                showToast("Pollinations node connection timed out. Please try again.", "error");
+                toggleGenerationState(false);
+            }
+        }
+
+        // Toggle generation UI displays
+        function toggleGenerationState(isLoading) {
+            if (isLoading) {
+                generateBtn.disabled = true;
+                generateBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                previewPlaceholder.classList.add('hidden');
+                previewSuccess.classList.add('hidden');
+                previewLoader.classList.remove('hidden');
+            } else {
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                previewLoader.classList.add('hidden');
+                generationInProgress = false;
+            }
+        }
+
+        // Simulate interactive pipeline percentages
+        let progressInterval = null;
+        function startProgressSimulation() {
+            let currentPct = 0;
+            loaderProgressBar.style.width = `0%`;
+            loaderProgressText.textContent = `0% Connection established`;
+
+            const phases = [
+                { limit: 25, label: "Analyzing prompt structure" },
+                { limit: 50, label: "Mapping space coordinates" },
+                { limit: 75, label: "Synthesizing vector colors" },
+                { limit: 95, label: "Injecting epsilon highlights" }
+            ];
+
+            progressInterval = setInterval(() => {
+                if (currentPct < 95) {
+                    currentPct += Math.floor(Math.random() * 8) + 1;
+                    if (currentPct > 95) currentPct = 95;
+
+                    // Choose phase label
+                    let label = "Connecting to pollination node";
+                    for (let p of phases) {
+                        if (currentPct <= p.limit) {
+                            label = p.label;
+                            break;
+                        }
+                    }
+
+                    loaderProgressBar.style.width = `${currentPct}%`;
+                    loaderProgressText.textContent = `${currentPct}% ${label}`;
+                }
+            }, 300);
+        }
+
+        function completeProgressSimulation() {
+            clearInterval(progressInterval);
+            loaderProgressBar.style.width = `100%`;
+            loaderProgressText.textContent = `100% Render finalized`;
+
+            setTimeout(() => {
+                toggleGenerationState(false);
+                previewSuccess.classList.remove('hidden');
+                showToast("Image generation complete!", "success");
+            }, 400);
+        }
+
+        // Download generated result directly to hard disk
+        function downloadRenderedImage() {
+            if (!generatedBlobUrl) return;
+            const a = document.createElement('a');
+            a.href = generatedBlobUrl;
+            // File naming configuration
+            a.download = `epsilon-editz-ai-${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Masterpiece download initiated!", "success");
+        }
+
+        // Save generated prompt metadata inside standard browser localStorage
+        function saveToGallery() {
+            if (!generatedBlobUrl) return;
+
+            // Fetch the image blob as Base64 to make it offline persistent, or save raw Pollinations url reference for space saving.
+            // Saving raw Pollination urls ensures swift memory footwork for localStorage!
+            const prompt = promptInput.value.trim();
+            const seed = metaSeed.textContent;
+            const size = metaDimensions.textContent;
+            const model = document.getElementById('modelSelect').value;
+
+            // Since blobs expire, local storage references Pollinations.ai URL natively
+            const sourceUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${currentWidth}&height=${currentHeight}&seed=${seed}&model=${model}&nologo=true`;
+
+            const galleryItem = {
+                id: Date.now(),
+                prompt: prompt,
+                seed: seed,
+                size: size,
+                url: sourceUrl
+            };
+
+            let savedGallery = JSON.parse(localStorage.getItem('epsilon_gallery')) || [];
+            
+            // Check for duplicates
+            const exists = savedGallery.some(item => item.prompt === galleryItem.prompt && item.seed === galleryItem.seed);
+            if (exists) {
+                showToast("This item is already saved inside your creative gallery!", "info");
+                return;
+            }
+
+            savedGallery.unshift(galleryItem); // add to top
+            localStorage.setItem('epsilon_gallery', JSON.stringify(savedGallery));
+
+            renderGallery();
+            showToast("Saved directly to Epsilon Gallery!", "success");
+        }
+
+        // Retrieve and render Gallery cards
+        function renderGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            const emptyState = document.getElementById('emptyGalleryState');
+            
+            let savedGallery = JSON.parse(localStorage.getItem('epsilon_gallery')) || [];
+
+            if (savedGallery.length === 0) {
+                galleryGrid.classList.add('hidden');
+                galleryGrid.classList.remove('grid');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            galleryGrid.classList.remove('hidden');
+            galleryGrid.classList.add('grid');
+
+            galleryGrid.innerHTML = ''; // clear grid
+
+            savedGallery.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-card/60 backdrop-blur-md border border-brand-border/60 rounded-xl overflow-hidden group shadow-lg transition-all duration-300 hover:border-brand-yellow/60 hover:-translate-y-1 relative";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-square bg-brand-dark/40 cursor-pointer" onclick="openModal('${item.url}', \`${item.prompt.replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`, '${item.seed}')">
+                        <img src="${item.url}" alt="Workspace Creation" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                            <span class="text-[10px] text-brand-yellow font-tech tracking-wider uppercase flex items-center gap-1">
+                                <i class="fa-solid fa-expand"></i> Click to Zoom
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 space-y-2">
+                        <p class="text-xs text-gray-300 font-medium line-clamp-2 leading-relaxed" title="${item.prompt}">${item.prompt}</p>
+                        <div class="flex items-center justify-between text-[10px] text-gray-500 border-t border-brand-border/40 pt-2 font-mono">
+                            <span>Seed: ${item.seed}</span>
+                            <div class="flex space-x-1">
+                                <button onclick="deleteGalleryItem(${item.id})" class="p-1 hover:text-rose-400 transition" title="Delete Saved Image">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                <button onclick="loadPromptToInput(\`${item.prompt.replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`)" class="p-1 hover:text-brand-yellow transition" title="Use Prompt Configuration">
+                                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.appendChild(card);
+            });
+        }
+
+        // Delete individual item from Workspace gallery
+        window.deleteGalleryItem = function(id) {
+            let savedGallery = JSON.parse(localStorage.getItem('epsilon_gallery')) || [];
+            savedGallery = savedGallery.filter(item => item.id !== id);
+            localStorage.setItem('epsilon_gallery', JSON.stringify(savedGallery));
+            renderGallery();
+            showToast("Item deleted from creative library.", "info");
+        }
+
+        // Re-inject prompt back into generator
+        window.loadPromptToInput = function(promptText) {
+            promptInput.value = promptText;
+            updateCharCount();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast("Prompt re-injected! Ready to render again.", "success");
+        }
+
+        // Clear whole Local gallery storage
+        function clearLocalGallery() {
+            if (confirm("Are you sure you want to purge all saved creative renders from this workspace session? This cannot be undone.")) {
+                localStorage.removeItem('epsilon_gallery');
+                renderGallery();
+                showToast("All creations wiped successfully.", "info");
+            }
+        }
+
+        // Share Image Address logic
+        function shareImageLink() {
+            if (!generatedBlobUrl) return;
+            const prompt = promptInput.value.trim();
+            const seed = metaSeed.textContent;
+            const model = document.getElementById('modelSelect').value;
+            const shareUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${currentWidth}&height=${currentHeight}&seed=${seed}&model=${model}&nologo=true`;
+
+            // Support direct copy utility framework natively
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = shareUrl;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Direct Pollinations URL copied to clipboard!", "success");
+        }
+
+        // Copy Meta Prompt
+        window.copyMetaPrompt = function() {
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = metaPrompt.textContent;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Text prompt metadata copied!", "success");
+        }
+
+        // Gallery Lightbox Fullscreen modal methods
+        window.openModal = function(url, prompt, seed) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalPrompt = document.getElementById('modalPrompt');
+            const modalSeed = document.getElementById('modalSeed');
+
+            modalImg.src = url;
+            modalPrompt.textContent = prompt;
+            modalSeed.textContent = seed;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // stop scroll
+        }
+
+        window.closeModal = function() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = ''; // restore scroll
+        }
+
+        window.downloadFromModal = function() {
+            const modalImg = document.getElementById('modalImg');
+            if (!modalImg.src) return;
+            
+            // To successfully trigger client-side download without cross-origin blocks
+            fetch(modalImg.src)
+                .then(resp => resp.blob())
+                .then(blob => {
+                    const blobUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = `epsilon-modal-save-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(blobUrl);
+                    showToast("Downloaded successfully!", "success");
+                })
+                .catch(err => {
+                    window.open(modalImg.src, '_blank');
+                    showToast("Opening source link to download directly.", "info");
+                });
+        }
+
+        // Elegant Dynamic Custom Notification Toast
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            
+            toastMsg.textContent = message;
+
+            // Reset positioning style animations
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
