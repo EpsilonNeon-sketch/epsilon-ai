@@ -16,5 +16,11 @@
         "description": "Turns rough email sketches to professional emails.",
         "link": "https://epsiai.vercel.app/ait/2.html",
         "gh_repo": "https://epsiai.vercel.ap/ait/2.html"
+    },
+     {
+        "name": "Art ai",
+        "description": "Make stunning images with advanced image gen ai models.",
+        "link": "https://epsiai.vercel.app/ait/3.html",
+        "gh_repo": "https://epsiai.vercel.ap/ait/3.html"
     }
 ]
