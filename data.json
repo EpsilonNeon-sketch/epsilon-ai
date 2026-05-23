@@ -3,18 +3,18 @@
         "name": "Epsilon Code Assistant",
         "description": "A specialized AI for writing and debugging code with high precision.",
         "link": "https://epsilai.vercel.app/ait/0.html",
-        "gh_repo": "https://epsilai.vercel.ap/ait/0.html"
+        "gh_repo": "https://epsiai.vercel.ap/ait/0.html"
     },
     {
         "name": "Master cheff",
         "description": "Make meals with leftover ingredients.",
         "link": "https://epsilai.vercel.app/ait/1.html",
-        "gh_repo": "https://epsilai.vercel.ap/ait/1.html"
+        "gh_repo": "https://epsiai.vercel.ap/ait/1.html"
     },
     {
         "name": "Email polisher",
         "description": "Turns rough email sketches to professional emails.",
         "link": "https://epsilai.vercel.app/ait/2.html",
-        "gh_repo": "https://epsilai.vercel.ap/ait/2.html"
+        "gh_repo": "https://epsiai.vercel.ap/ait/2.html"
     }
 ]
