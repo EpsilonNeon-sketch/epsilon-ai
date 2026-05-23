@@ -253,9 +253,14 @@
                     <span class="text-xl font-bold tracking-tight">EPSILON <span class="text-pink-500">AI</span></span>
                 </div>
                 <button id="newChatBtn"
-                    class="w-full flex items-center gap-3 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-500/30 text-pink-400 font-semibold p-3 rounded-xl transition-all mb-6">
+                    class="w-full flex items-center gap-3 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-500/30 text-pink-400 font-semibold p-3 rounded-xl transition-all mb-4">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                     <span>New Chat</span>
+                </button>
+                <button id="toolsBtn"
+                    class="w-full flex items-center gap-3 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-500/30 text-pink-400 font-semibold p-3 rounded-xl transition-all mb-6">
+                    <i data-lucide="grid" class="w-5 h-5"></i>
+                    <span>AI Tools</span>
                 </button>
                 <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Recent History</div>
                 <div id="chatsList" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)] scrollbar-hide">
@@ -309,8 +314,26 @@
                 </div>
             </div>
 
+            <!-- Tools Container -->
+            <div id="toolsContainer" class="hidden flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scrollbar-hide">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-pink-600/20 rounded-2xl flex items-center justify-center border border-pink-500/30">
+                            <i data-lucide="grid" class="w-6 h-6 text-pink-500"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-bold tracking-tight">Epsilon <span class="text-pink-500">AI Tools</span></h2>
+                            <p class="text-gray-400">Smaller AI tools powered by Pollinations</p>
+                        </div>
+                    </div>
+                    <div id="toolsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+                        <!-- Tools will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Input Area -->
-            <div class="p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+            <div id="inputArea" class="p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
                 <form id="chatForm" class="max-w-4xl mx-auto relative group">
                     <input type="text" id="userInput"
                         class="w-full bg-white/5 border border-pink-500/20 rounded-2xl pl-6 pr-16 py-4 md:py-5 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all shadow-2xl"
@@ -406,7 +429,8 @@
     </div>
 
     <!-- Code Copy Modal -->
-    <div id="codeCopyModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div id="codeCopyModal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="glass rounded-3xl max-w-2xl w-full pink-glow">
             <!-- Modal Header -->
             <div class="border-b border-pink-500/10 p-6 flex items-center justify-between">
@@ -478,6 +502,10 @@
         const userInput = document.getElementById('userInput');
         const chatsList = document.getElementById('chatsList');
         const newChatBtn = document.getElementById('newChatBtn');
+        const toolsBtn = document.getElementById('toolsBtn');
+        const toolsContainer = document.getElementById('toolsContainer');
+        const inputArea = document.getElementById('inputArea');
+        const toolsList = document.getElementById('toolsList');
         const currentChatTitle = document.getElementById('currentChatTitle');
         const welcomeState = document.getElementById('welcomeState');
 
@@ -607,6 +635,65 @@
             return `You are an AI assistant created by ${creator}. Follow these guidelines:\n\n${customRulesText}`;
         }
 
+        // Page Switching
+        function showPage(page) {
+            if (page === 'chat') {
+                messagesContainer.classList.remove('hidden');
+                inputArea.classList.remove('hidden');
+                toolsContainer.classList.add('hidden');
+                currentChatTitle.innerText = currentChatId ? currentChatTitle.innerText : 'New Conversation';
+            } else if (page === 'tools') {
+                messagesContainer.classList.add('hidden');
+                inputArea.classList.add('hidden');
+                toolsContainer.classList.remove('hidden');
+                currentChatTitle.innerText = 'AI Tools';
+                loadTools();
+            }
+        }
+
+        async function loadTools() {
+            try {
+                const response = await fetch('data.json');
+                const tools = await response.json();
+
+                toolsList.innerHTML = tools.map(tool => `
+                    <div class="glass p-6 rounded-3xl pink-border hover:pink-glow transition-all flex flex-col h-full group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 bg-pink-600/20 rounded-xl flex items-center justify-center border border-pink-500/30">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-pink-500"></i>
+                            </div>
+                            <div class="flex gap-2">
+                                ${tool.gh_repo ? `
+                                    <a href="${tool.gh_repo}" target="_blank" class="text-gray-500 hover:text-white transition-colors">
+                                        <i data-lucide="github" class="w-5 h-5"></i>
+                                    </a>
+                                ` : ''}
+                                <a href="${tool.link}" target="_blank" class="text-gray-500 hover:text-pink-500 transition-colors">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-pink-400 transition-colors">${tool.name}</h3>
+                        <p class="text-gray-400 text-sm mb-6 flex-1">${tool.description}</p>
+                        <a href="${tool.link}" target="_blank" 
+                            class="w-full bg-pink-600/10 hover:bg-pink-600 text-pink-400 hover:text-white font-bold py-3 rounded-xl transition-all border border-pink-500/20 text-center flex items-center justify-center gap-2">
+                            <span>Open AI</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error loading tools:', error);
+                toolsList.innerHTML = '<p class="text-red-500">Failed to load AI tools.</p>';
+            }
+        }
+
+        toolsBtn.addEventListener('click', () => {
+            showPage('tools');
+            if (window.innerWidth < 768) mobileNav.classList.add('hidden');
+        });
+
         // Settings Modal Event Listeners
         settingsBtn.addEventListener('click', async () => {
             await loadSettingsFromSupabase();
@@ -671,11 +758,11 @@
         selectAllCodeBtn.addEventListener('click', () => {
             codeTextarea.select();
             document.execCommand('copy');
-            
+
             const originalText = selectAllCodeBtn.innerHTML;
             selectAllCodeBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
             lucide.createIcons();
-            
+
             setTimeout(() => {
                 selectAllCodeBtn.innerHTML = originalText;
                 lucide.createIcons();
@@ -762,6 +849,7 @@
         }
 
         async function selectChat(id, title) {
+            showPage('chat');
             currentChatId = id;
             currentChatTitle.innerText = title;
             welcomeState.style.display = 'none';
@@ -780,6 +868,7 @@
         }
 
         newChatBtn.addEventListener('click', () => {
+            showPage('chat');
             currentChatId = null;
             currentChatTitle.innerText = 'New Conversation';
             messagesContainer.innerHTML = '';
@@ -886,13 +975,13 @@
             const code = e.currentTarget.getAttribute('data-code');
             const codeTextarea = document.getElementById('codeTextarea');
             const codeCopyModal = document.getElementById('codeCopyModal');
-            
+
             // Set the code in textarea
             codeTextarea.value = code;
-            
+
             // Show modal
             codeCopyModal.classList.remove('hidden');
-            
+
             // Auto-select all text
             setTimeout(() => {
                 codeTextarea.select();
