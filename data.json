@@ -1,11 +1,5 @@
 [
     {
-        "name": "Epsilon Code Assistant",
-        "description": "A specialized AI for writing and debugging code with high precision.",
-        "link": "https://epsiai.vercel.app/ait/0.html",
-        "gh_repo": "https://epsiai.vercel.ap/ait/0.html"
-    },
-    {
         "name": "Master cheff",
         "description": "Make meals with leftover ingredients.",
         "link": "https://epsiai.vercel.app/ait/1.html",
@@ -22,5 +16,11 @@
         "description": "Make stunning images with advanced image gen ai models.",
         "link": "https://epsiai.vercel.app/ait/3.html",
         "gh_repo": "https://epsiai.vercel.ap/ait/3.html"
+    },
+     {
+        "name": "Epsilon Code Assistant",
+        "description": "A specialized AI for writing and debugging code with high precision.",
+        "link": "https://epsiai.vercel.app/ait/4.html",
+        "gh_repo": "https://epsiai.vercel.ap/ait/4.html"
     }
 ]
